@@ -1,5 +1,8 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { FiCheckCircle, FiInfo, FiMessageSquare } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { STALE_TIME_MINUTE } from '../../helpers';
+import { getIssue, getIssuesComments } from '../actions';
 import { GithubIssue, State } from '../interfaces';
 
 interface Props {
@@ -8,9 +11,27 @@ interface Props {
 
 export const IssueItem = ({ issue }: Props) => {
 	const navigate = useNavigate();
+	const queryClient = useQueryClient();
+
+	const prefetchData = () => {
+		queryClient.prefetchQuery({
+			queryKey: ['issues', issue.number],
+			queryFn: () => getIssue(issue.number),
+			staleTime: STALE_TIME_MINUTE,
+		});
+
+		queryClient.prefetchQuery({
+			queryKey: ['issues', issue.number, issue.comments],
+			queryFn: () => getIssuesComments(issue.number),
+			staleTime: STALE_TIME_MINUTE,
+		});
+	};
 
 	return (
-		<div className='animate-fadeIn flex items-center px-2 py-3 mb-5 border rounded-md bg-slate-900 hover:bg-slate-800'>
+		<div
+			className='animate-fadeIn flex items-center px-2 py-3 mb-5 border rounded-md bg-slate-900 hover:bg-slate-800'
+			onMouseEnter={prefetchData}
+		>
 			{issue.state === State.Close ? (
 				<FiCheckCircle
 					size={30}
