@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { STALE_TIME_HOUR } from '../../helpers/utils';
 import { getLabels } from '../actions';
 import { GithubLabel } from '../interfaces';
 
@@ -6,7 +7,7 @@ export const useLabels = () => {
 	const labelsQuery = useQuery({
 		queryKey: ['labels'],
 		queryFn: getLabels,
-		staleTime: 1000 * 60 * 60, // 1 hour of stale time
+		staleTime: STALE_TIME_HOUR, // 1 hour of stale time
 		placeholderData: [
 			{
 				id: 6955781886,
