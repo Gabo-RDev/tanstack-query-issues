@@ -27,10 +27,16 @@ export const IssueItem = ({ issue }: Props) => {
 		});
 	};
 
+	const presetData = () => {
+		queryClient.setQueryData(['issues', issue.number], issue, {
+			updatedAt: Date.now() + STALE_TIME_MINUTE,
+		});
+	};
+
 	return (
 		<div
 			className='animate-fadeIn flex items-center px-2 py-3 mb-5 border rounded-md bg-slate-900 hover:bg-slate-800'
-			onMouseEnter={prefetchData}
+			onMouseEnter={presetData}
 		>
 			{issue.state === State.Close ? (
 				<FiCheckCircle
